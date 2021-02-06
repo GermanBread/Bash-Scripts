@@ -1,17 +1,35 @@
 #!/bin/bash
 
+# Made by GermanBread#9077
+# You can use this script inside Lutris
+
+## Variables
+
+# Downloads
+osu_dl="https://github.com/ppy/osu/releases/latest/download/osu.AppImage"
+script_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/osu-updater/updater.sh"
+
+# Check-files
+osu_check_file="LastOsuRelease.txt"
+script_check_file="LastScriptRelease.txt"
+
+# Osu file
+osu_fn="osu.AppImage"
+
+# Paramaters
+param_1="none"
+
 if [ $1 ]; then
     param_1=$1  
-else
-    param_1="null"
-fi
-if [ $2 ]; then
-    param_2=$2
-else
-    param_2="null"
 fi
 
-# Define our functions first
+# Create the check-files
+touch $osu_check_file
+touch $script_check_file
+
+## Functions are defined here
+
+# Logging
 log () {
     printf ":: $1\n"
 }
@@ -28,43 +46,71 @@ logandnotif () {
     log "$1"
     notif "$1"
 }
-launch () {
+errorandnotif () {
+    error "$1"
+    notif "$1"
+}
+
+# Responsible for starting Osu!
+launch_osu () {
+    # Check if the script is allowed to start Osu!
+    if [ $param_1 == "dl-only" ]; then
+        exit
+    fi
     if [ $param_1 != "nostart" ]; then
-        logandnotif "Starting Osu!"
+        log "Starting Osu!"
         ./osu.AppImage
-        if [[ $? > 0 && $param_2 != "dl-only" ]]; then
-            logandnotif "Something went wrong, reinstalling Osu!"
-            rm lastrelease.txt
-            $0 "$param_1" "dl-only"
+        if [ $? -ne 0 ]; then
+            errorandnotif "Something went wrong, reinstalling Osu!"
+            rm $osu_check_file
+            bash $0 "dl-only"
             exit
         fi
         exit
     fi
 }
 
-# Use this as a pre-launch script inside Lutris
-log "Fetching response"
-if [ "$(curl https://github.com/ppy/osu/releases/latest/download/osu.AppImage)" == "$(cat lastrelease.txt)" ]; then
-    log "Up to date, no updating needed"
-    launch
-    exit
+# Update checking
+check_for_script_update () {
+    if [ "$(curl -s $script_dl)" != "$(cat $script_check_file)" ]; then
+        curl -s $script_dl > $script_check_file
+        return 1
+    fi
+}
+check_for_osu_update () {
+    if [ "$(curl -s $osu_dl)" != "$(cat $osu_check_file)" ]; then
+        curl -s $osu_dl > $osu_check_file
+        return 1
+    fi
+}
+
+# Updating
+update_script () {
+    logandnotif "Updating Script"
+    wget -qO $0_new $script_dl
+    if [ $? -ne 0 ]; then
+        errorandnotif "Script update failed"
+    else
+        chmod +x $0
+    fi
+}
+update_osu () {
+    logandnotif "Updating Osu!"
+    wget -qO $osu_fn $osu_dl
+    if [ $? -ne 0 ]; then
+        errorandnotif "Osu! update failed"
+    else
+        chmod +x $osu_fn
+    fi
+}
+
+# Now onto the code
+check_for_script_update
+if [ $? -ne 0 ]; then
+    update_script
 fi
-notif "Updating Osu!"
-log "Saving last response to disk"
-curl https://github.com/ppy/osu/releases/latest/download/osu.AppImage > lastrelease.txt
-log "Downloading Osu!"
-wget -O osu.AppImage_new https://github.com/ppy/osu/releases/latest/download/osu.AppImage
-if [ $? == 0 ]; then
-    notif "Update sucessful!"
-else
-    error "Update failed!"
-    notif "Update failedl!"
-    rm lastrelease.txt
-    exit
+check_for_osu_update
+if [ $? -ne 0 ]; then
+    update_osu
 fi
-log "Overwriting file"
-mv osu.AppImage_new osu.AppImage
-log "Marking file as executable"
-chmod +x osu.AppImage
-launch
-exit
+launch_osu
