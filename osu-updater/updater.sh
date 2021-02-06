@@ -3,6 +3,14 @@
 # Made by GermanBread#9077
 # You can use this script inside Lutris
 
+### Setup
+
+# Rename this file to something different other than the default name "bash"
+if [ $0 == "bash" ]; then
+    exit
+    mv $0 OsuUpdater.sh
+fi
+
 ## Variables
 
 # Downloads
@@ -64,6 +72,7 @@ launch_osu () {
             errorandnotif "Something went wrong, reinstalling Osu!"
             rm $osu_check_file
             bash $0 "dl-only"
+            infoandnotif "Restart this script"
             exit
         fi
         exit
