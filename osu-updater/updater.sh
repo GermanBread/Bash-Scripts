@@ -50,18 +50,19 @@ errorandnotif () {
 # Responsible for starting Osu!
 launch_osu () {
     # Check if the script is allowed to start Osu!
-    if [ $param_1 == "dl-only" ]; then
-        exit
-    fi
     if [ $param_1 != "nostart" ]; then
-        log "Starting Osu!"
+        logandnotif "Starting Osu!"
         ./osu.AppImage
         if [ $? -ne 0 ]; then
-            errorandnotif "Something went wrong, reinstalling Osu!"
+            
             rm $osu_check_file
-            bash $0 "dl-only"
-            infoandnotif "Restart this script"
-            exit
+            if [ $param_1 != "norestart" ]; then
+                errorandnotif "Something went wrong. Attempting to fix issue by reinstalling Osu!"
+                bash $0 "norestart"
+                exit
+            else
+                errorandnotif "Reinstall failed. Download the newest script here: https://github.com/GermanBread/Bash-Scripts"
+            fi
         fi
         exit
     fi
