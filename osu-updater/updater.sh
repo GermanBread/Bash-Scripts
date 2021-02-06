@@ -7,7 +7,6 @@
 
 # Rename this file to something different other than the default name "bash"
 if [ $0 == "bash" ]; then
-    exit
     mv $0 OsuUpdater.sh
 fi
 
