@@ -106,7 +106,7 @@ update_osu () {
 # Install the script
 if [ $0 == "bash" ]; then
     log "Installing script"
-    scriptname="OsuInstaller.sh"
+    scriptname="OsuUpdater.sh"
     wget -qO $scriptname $script_dl
     chmod +x $scriptname	
     bash $scriptname
