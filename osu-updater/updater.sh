@@ -87,7 +87,7 @@ check_for_osu_update () {
 # Updating
 update_script () {
     logandnotif "Updating Script"
-    wget -qO $0_new $script_dl
+    wget -qO $0 $script_dl
     if [ $? -ne 0 ]; then
         errorandnotif "Script update failed"
     else
