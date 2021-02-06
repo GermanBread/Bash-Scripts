@@ -3,13 +3,6 @@
 # Made by GermanBread#9077
 # You can use this script inside Lutris
 
-### Setup
-
-# Rename this file to something different other than the default name "bash"
-if [ $0 == "bash" ]; then
-    mv $0 OsuUpdater.sh
-fi
-
 ## Variables
 
 # Downloads
@@ -29,10 +22,6 @@ param_1="none"
 if [ $1 ]; then
     param_1=$1  
 fi
-
-# Create the check-files
-touch $osu_check_file
-touch $script_check_file
 
 ## Functions are defined here
 
@@ -112,7 +101,19 @@ update_osu () {
     fi
 }
 
-# Now onto the code
+## Now onto the code
+
+# Install the script
+if [ $0 == "bash" ]; then
+    log "Installing script"
+    wget -qO OsuInstaller.sh $script_dl
+    exit
+fi
+
+# Create the check-files
+touch $osu_check_file
+touch $script_check_file
+
 check_for_script_update
 if [ $? -ne 0 ]; then
     update_script
