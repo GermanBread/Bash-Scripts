@@ -73,7 +73,7 @@ if [ "$(curl -Ns $base_dl/$script_name)" != "$(cat $config_path/$script_check_fi
     # Assume that the icon changed too
     wget -qO $config_path/$icon_name $base_dl/$icon_name
 
-    bash $0
+    $config_path/$script_name
     exit 0
 fi
 
