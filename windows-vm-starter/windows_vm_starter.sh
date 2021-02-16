@@ -10,7 +10,8 @@ script_name="windows_vm_starter.sh"
 icon_name="windows10.png"
 shortcut_name="Windows.desktop"
 
-script_check_file=$config_path/$script_name.check
+script_check_file=$script_name.check
+shortcut_check_file=$script_name.check
 
 # Logging
 log () {
@@ -49,14 +50,30 @@ if [ $0 == bash ]; then
     echo "rm -r $config_path" >> $config_path/uninstall.sh
     echo "rm ~/.local/share/applications/$shortcut_name" >> $config_path/uninstall.sh
     chmod +x $config_path/uninstall.sh
-    exit 0;
+
+    # Create the checkfile
+    wget -qO $config_path/$script_check_file $base_dl/$script_dl
+    wget -qO $config_path/$shortcut_check_file $base_dl/$shortcut_name
+    exit 0
 fi
 
 # Update
-if [ $(curl $base_dl/$script_name) != $(cat $config_path/$script_check_file) ]; then
-    logandnotif "Updating"
-    echo $(curl $base_dl/$script_name) > $config_path/$script_check_file
-    wget -o $config_path/$script_name $base_dl/$script_name
+# Note: If the script or the .desktop file gets updated seperately, stuff might break
+if [ $(curl $base_dl/$script_name) != $(cat $config_path/$script_check_file) || $(curl ~/.local/share/applications/$shortcut_name) != $(cat $config_path/$shortcut_check_file) ]; then
+    logandnotif "Updating script"
+    wget -qO $config_path/$script_check_file $base_dl/$script_check_file
+    wget -qO $config_path/$script_name $base_dl/$script_name
+
+    logandnotif "Updating desktop file"
+    # Assume that the icon changed too
+    wget -qO $config_path/$shortcut_check_file $base_dl/$shortcut_check_file
+    wget -qO $config_path/$shortcut_name $base_dl/$shortcut_name
+    
+    # Assume that the icon changed too
+    wget -qO $config_path/$icon_name $base_dl/$icon_name
+
+    bash $0
+    exit 0
 fi
 
 if [ $1 == "-h" ]; then
