@@ -60,7 +60,7 @@ fi
 
 # Update
 # Note: If the script or the .desktop file gets updated seperately, stuff might break
-if [ "$(curl -s $base_dl/$script_name)" != "$(cat $config_path/$script_check_file)" ] || [ "$(curl -s $base_dl/$shortcut_name)" != "(cat $config_path/$shortcut_check_file)" ]; then
+if [ "$(curl -s $base_dl/$script_name)" != "$(cat $config_path/$script_check_file)" || "$(curl -s $base_dl/$shortcut_name)" != "(cat $config_path/$shortcut_check_file)" ]; then
     logandnotif "Updating script"
     wget -qO $config_path/$script_check_file $base_dl/$script_check_file
     wget -qO $config_path/$script_name $base_dl/$script_name
@@ -133,7 +133,6 @@ if [[ $startresult == "0" ]]; then
     logandnotif "Replaced older instance" -a "Windows VM Starter"
 fi
 logandnotif "Starting VM" -a "Windows VM Starter"
-fi
 echo $pass | sudo -S virsh start win10
 if [[ $? == "0" ]]; then
     log "Started Windows 10 VM\n"
