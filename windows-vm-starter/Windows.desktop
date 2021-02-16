@@ -1,8 +1,8 @@
 [Desktop Entry]
 Categories=Gaming;
-Exec=~/.GermanBread/
+Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh
 GenericName=Starts your Windows 10 Virtual Machine
-Icon=~/.local/share/icons/hicolor/512x512/apps/windows10.png
+Icon=~/.GermanBread/vm-starter/windows10.png
 Name=Windows 10 VM
 StartupNotify=false
 Terminal=false
@@ -12,4 +12,4 @@ Actions=fullscreen;
 
 [Desktop Action fullscreen]
 Name=Full-screen mode
-Exec=~/.vminit.sh -fs
+Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -fs

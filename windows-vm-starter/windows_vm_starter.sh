@@ -4,7 +4,7 @@
 config_path=~/.GermanBread/vm-starter
 mkdir -p $config_path
 
-base_dl="https://raw.githubusercontent.com/GermanBread/windows-vm-starter"
+base_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/windows-vm-starter"
 
 script_name="windows_vm_starter.sh"
 icon_name="windows10.png"
@@ -36,14 +36,27 @@ errorandnotif () {
 
 # Check for Curl
 if [ $0 == bash ]; then
+    # Install
     logandnotif "Installing"
-    mkdir -p ~/.local/share/icons/hicolor/512x512/apps/
-    wget -qo $config_path/$script_name $base_dl/$script_name
-    wget -qo ~/.local/share/icons/hicolor/512x512/apps/$icon_name $base_dl/$icon_name
-    wget -qo ~/.local/share/applications/$shortcut_name $base_dl/$shortcut_name
+    wget -qO $config_path/$script_name $base_dl/$script_name
+    wget -qO $config_path/$icon_name $base_dl/$icon_name
+    wget -qO ~/.local/share/applications/$shortcut_name $base_dl/$shortcut_name
     chmod +x $config_path/$script_name
     logandnotif "Installation done. A shortcut has been added. Simply search for it using your application manager of choice"
+    
+    # Uninstaller
+    echo "#!/bin/bash" > $config_path/uninstall.sh
+    echo "rm -r $config_path" >> $config_path/uninstall.sh
+    echo "rm ~/.local/share/applications/$shortcut_name" >> $config_path/uninstall.sh
+    chmod +x $config_path/uninstall.sh
     exit 0;
+fi
+
+# Update
+if [ $(curl $base_dl/$script_name) != $(cat $config_path/$script_check_file) ]; then
+    logandnotif "Updating"
+    echo $(curl $base_dl/$script_name) > $config_path/$script_check_file
+    wget -o $config_path/$script_name $base_dl/$script_name
 fi
 
 if [ $1 == "-h" ]; then
