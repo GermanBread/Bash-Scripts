@@ -62,12 +62,12 @@ fi
 # Note: If the script or the .desktop file gets updated seperately, stuff might break
 if [ "$(curl -Ns $base_dl/$script_name)" != "$(cat $config_path/$script_check_file)" ] || [ "$(curl -Ns $base_dl/$shortcut_name)" != "(cat $config_path/$shortcut_check_file)" ]; then
     logandnotif "Updating script"
-    wget -qO $config_path/$script_check_file $base_dl/$script_check_file
+    wget -qO $config_path/$script_check_file $base_dl/$script_name
     wget -qO $config_path/$script_name $base_dl/$script_name
 
     logandnotif "Updating desktop file"
     # Assume that the icon changed too
-    wget -qO $config_path/$shortcut_check_file $base_dl/$shortcut_check_file
+    wget -qO $config_path/$shortcut_check_file $base_dl/$shortcut_name
     wget -qO $config_path/$shortcut_name $base_dl/$shortcut_name
     
     # Assume that the icon changed too
