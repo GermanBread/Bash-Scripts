@@ -11,7 +11,7 @@ icon_name="windows10.png"
 shortcut_name="Windows.desktop"
 
 script_check_file=$script_name.check
-shortcut_check_file=$script_name.check
+shortcut_check_file=$shortcut_name.check
 
 # Logging
 log () {
@@ -39,6 +39,7 @@ errorandnotif () {
 if [ $0 == bash ]; then
     # Install
     logandnotif "Installing"
+    log "Installing to $config_path"
     wget -qO $config_path/$script_name $base_dl/$script_name
     wget -qO $config_path/$icon_name $base_dl/$icon_name
     wget -qO ~/.local/share/applications/$shortcut_name $base_dl/$shortcut_name
@@ -52,14 +53,14 @@ if [ $0 == bash ]; then
     chmod +x $config_path/uninstall.sh
 
     # Create the checkfile
-    wget -qO $config_path/$script_check_file $base_dl/$script_dl
+    wget -qO $config_path/$script_check_file $base_dl/$script_name
     wget -qO $config_path/$shortcut_check_file $base_dl/$shortcut_name
     exit 0
 fi
 
 # Update
 # Note: If the script or the .desktop file gets updated seperately, stuff might break
-if [ $(curl $base_dl/$script_name) != $(cat $config_path/$script_check_file) || $(curl ~/.local/share/applications/$shortcut_name) != $(cat $config_path/$shortcut_check_file) ]; then
+if [ $(curl -s $base_dl/$script_name) != $(cat $config_path/$script_check_file) ] || [ $(curl -s $base_dl/$shortcut_name) != $(cat $config_path/$shortcut_check_file) ]; then
     logandnotif "Updating script"
     wget -qO $config_path/$script_check_file $base_dl/$script_check_file
     wget -qO $config_path/$script_name $base_dl/$script_name
@@ -131,9 +132,7 @@ fi
 if [[ $startresult == "0" ]]; then
     logandnotif "Replaced older instance" -a "Windows VM Starter"
 fi
-log "Starting VM\n"
-if [[ $startresult > "0" ]]; then
-    logandnotif "Starting VM" -a "Windows VM Starter"
+logandnotif "Starting VM" -a "Windows VM Starter"
 fi
 echo $pass | sudo -S virsh start win10
 if [[ $? == "0" ]]; then
