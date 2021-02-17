@@ -3,8 +3,6 @@
 ## Info
 
 * Files get installed to ~/.GermanBread/vm-starter
-* Everything can be uninstalled by double-clicking `uninstall.sh` in the directory mentioned above
-* `-fs` parameter for fullscreen
 * The shortcut has a submenu (accessed by right-clicking it)
 
 ## Warning
