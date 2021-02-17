@@ -2,18 +2,22 @@
 Categories=Gaming;
 Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh
 GenericName=Starts your Windows 10 Virtual Machine
-Icon=~/.GermanBread/vm-starter/windows10.png
+Icon=windows10.png
 Name=Windows 10 VM
 StartupNotify=false
 Terminal=false
 Type=Application
 Version=1
-Actions=fullscreen;uninstall;
+Actions=fullscreen;update;uninstall;
 
 [Desktop Action fullscreen]
 Name=Full-screen mode
 Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -fs
 
+[Desktop Action update]
+Name=Full-screen mode
+Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -up
+
 [Desktop Action uninstall]
 Name=Uninstall
-Exec=~/.GermanBread/vm-starter/uninstall.sh
+Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -un

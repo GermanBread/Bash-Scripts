@@ -47,35 +47,9 @@ if [ $0 == bash ]; then
     wget -qO $icon_path/$icon_name $base_dl/$icon_name
     log "Installing .desktop to $shortcut_path"
     wget -qO $shortcut_path/$shortcut_name $base_dl/$shortcut_name
-    
-    # Uninstaller
-    log "Creating uninstaller"
-    echo "#!/bin/bash" > $config_path/uninstall.sh
-    echo "rm -r $config_path" >> $config_path/uninstall.sh
-    echo "rm ~/.local/share/applications/$shortcut_name" >> $config_path/uninstall.sh
-    chmod +x $config_path/uninstall.sh
 
     logandnotif "Installation done. A .desktop file has been added"
 
-    exit 0
-fi
-
-# Update
-# Note: If the script or the .desktop file gets updated seperately, stuff might break
-if [ "$(curl -s $base_dl/$script_name)" != "$(cat $0)" ] || [ "$(curl -s $base_dl/$shortcut_name)" != "(cat $shortcut_path/$shortcut_name)" ]; then
-    logandnotif "Updating script"
-    wget -qO $config_path/$script_name $base_dl/$script_name
-
-    logandnotif "Updating desktop file"
-    # Assume that the .desktop changed too
-    wget -qO $shortcut_path/$shortcut_name $base_dl/$shortcut_name
-    
-    # Assume that the icon changed too
-    logandnotif "Updating icon"
-    wget -qO $icon_path/$icon_name $base_dl/$icon_name
-
-    logandnotif "Restarting script"
-    $config_path/$script_name
     exit 0
 fi
 
@@ -92,6 +66,39 @@ fi
 if [ $(whoami) == root ]; then
     error "Do not run as root\n"
     exit 1
+fi
+
+# Update
+# Note: If the script or the .desktop file gets updated seperately, stuff might break
+if [ $1 == "-up" ]; then
+    logandnotif "Updating script"
+    wget -qO $config_path/$script_name $base_dl/$script_name
+
+    logandnotif "Updating desktop file"
+    # Assume that the .desktop changed too
+    wget -qO $shortcut_path/$shortcut_name $base_dl/$shortcut_name
+    
+    # Assume that the icon changed too
+    logandnotif "Updating icon"
+    wget -qO $icon_path/$icon_name $base_dl/$icon_name
+
+    logandnotif "Update done"
+    exit 0
+fi
+
+# Uninstall
+if [ $1 == "-un" ]; then
+    logandnotif "Deleting script"
+    rm -r $config_path
+
+    logandnotif "Deleting desktop file"
+    rm $shortcut_path/$shortcut_name
+    
+    logandnotif "Deleting icon"
+    rm $icon_path/$icon_name
+
+    logandnotif "Uninstall done"
+    exit 0
 fi
 
 # Get the password
