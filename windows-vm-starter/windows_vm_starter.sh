@@ -11,7 +11,6 @@ icon_name="windows10.png"
 shortcut_name="Windows.desktop"
 
 script_check_file=$script_name.check
-shortcut_check_file=$shortcut_name.check
 
 # Logging
 log () {
@@ -44,35 +43,35 @@ if [ $0 == bash ]; then
     wget -qO $config_path/$icon_name $base_dl/$icon_name
     wget -qO ~/.local/share/applications/$shortcut_name $base_dl/$shortcut_name
     chmod +x $config_path/$script_name
-    logandnotif "Installation done. A shortcut has been added. Simply search for it using your application manager of choice"
     
     # Uninstaller
+    log "Creating uninstaller"
     echo "#!/bin/bash" > $config_path/uninstall.sh
     echo "rm -r $config_path" >> $config_path/uninstall.sh
     echo "rm ~/.local/share/applications/$shortcut_name" >> $config_path/uninstall.sh
     chmod +x $config_path/uninstall.sh
 
-    # Create the checkfile
-    wget -qO $config_path/$script_check_file $base_dl/$script_name
-    wget -qO $config_path/$shortcut_check_file $base_dl/$shortcut_name
+    logandnotif "Installation done. A .desktop file has been added"
+
     exit 0
 fi
 
 # Update
 # Note: If the script or the .desktop file gets updated seperately, stuff might break
-if [ "$(curl -s $base_dl/$script_name)" != "$(cat $config_path/$script_check_file)" ] || [ "$(curl -s $base_dl/$shortcut_name)" != "(cat $config_path/$shortcut_check_file)" ]; then
+if [ "$(curl -s $base_dl/$script_name)" != "$(cat $0)" ] || [ "$(curl -s $base_dl/$shortcut_name)" != "(cat ~/.local/share/applications/$shortcut_name)" ]; then
     logandnotif "Updating script"
     wget -qO $config_path/$script_check_file $base_dl/$script_name
     wget -qO $config_path/$script_name $base_dl/$script_name
 
     logandnotif "Updating desktop file"
-    # Assume that the icon changed too
-    wget -qO $config_path/$shortcut_check_file $base_dl/$shortcut_name
+    # Assume that the .desktop changed too
     wget -qO $config_path/$shortcut_name $base_dl/$shortcut_name
     
     # Assume that the icon changed too
+    logandnotif "Updating icon"
     wget -qO $config_path/$icon_name $base_dl/$icon_name
 
+    logandnotif "Restarting script"
     $config_path/$script_name
     exit 0
 fi

@@ -8,8 +8,12 @@ StartupNotify=false
 Terminal=false
 Type=Application
 Version=1
-Actions=fullscreen;
+Actions=fullscreen;uninstall;
 
 [Desktop Action fullscreen]
 Name=Full-screen mode
 Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -fs
+
+[Desktop Action uninstall]
+Name=Uninstall
+Exec=~/.GermanBread/vm-starter/uninstall.sh
