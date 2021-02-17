@@ -2,7 +2,11 @@
 
 # define out config path
 config_path=~/.GermanBread/vm-starter
+shortcut_path=~/.local/share/applications
+icon_path=~/.local/share/icons/hicolor/512x512/apps
 mkdir -p $config_path
+mkdir -p $shortcut_path
+mkdir -p $icon_path
 
 base_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/windows-vm-starter"
 
@@ -38,11 +42,13 @@ errorandnotif () {
 if [ $0 == bash ]; then
     # Install
     logandnotif "Installing"
-    log "Installing to $config_path"
+    log "Installing script to $config_path"
     wget -qO $config_path/$script_name $base_dl/$script_name
-    wget -qO $config_path/$icon_name $base_dl/$icon_name
-    wget -qO ~/.local/share/applications/$shortcut_name $base_dl/$shortcut_name
     chmod +x $config_path/$script_name
+    log "Installing icon to $icon_path"
+    wget -qO $icon_path/$icon_name $base_dl/$icon_name
+    log "Installing .desktop to $shortcut_path"
+    wget -qO $shortcut_path/$shortcut_name $base_dl/$shortcut_name
     
     # Uninstaller
     log "Creating uninstaller"
@@ -58,18 +64,17 @@ fi
 
 # Update
 # Note: If the script or the .desktop file gets updated seperately, stuff might break
-if [ "$(curl -s $base_dl/$script_name)" != "$(cat $0)" ] || [ "$(curl -s $base_dl/$shortcut_name)" != "(cat ~/.local/share/applications/$shortcut_name)" ]; then
+if [ "$(curl -s $base_dl/$script_name)" != "$(cat $0)" ] || [ "$(curl -s $base_dl/$shortcut_name)" != "(cat $shortcut_path/$shortcut_name)" ]; then
     logandnotif "Updating script"
-    wget -qO $config_path/$script_check_file $base_dl/$script_name
     wget -qO $config_path/$script_name $base_dl/$script_name
 
     logandnotif "Updating desktop file"
     # Assume that the .desktop changed too
-    wget -qO $config_path/$shortcut_name $base_dl/$shortcut_name
+    wget -qO $shortcut_path/$shortcut_name $base_dl/$shortcut_name
     
     # Assume that the icon changed too
     logandnotif "Updating icon"
-    wget -qO $config_path/$icon_name $base_dl/$icon_name
+    wget -qO $icon_path/$icon_name $base_dl/$icon_name
 
     logandnotif "Restarting script"
     $config_path/$script_name
