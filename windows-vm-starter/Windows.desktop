@@ -11,11 +11,11 @@ Version=1
 Actions=fullscreen;update;uninstall;
 
 [Desktop Action fullscreen]
-Name=Full-screen mode
+Name=Full-screen
 Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -fs
 
 [Desktop Action update]
-Name=Full-screen mode
+Name=Update
 Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -up
 
 [Desktop Action uninstall]

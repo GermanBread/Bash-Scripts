@@ -88,7 +88,7 @@ fi
 
 # Uninstall
 if [ $1 == "-un" ]; then
-    logandnotif "Deleting script"
+    logandnotif "Deleting $config_path"
     rm -r $config_path
 
     logandnotif "Deleting desktop file"
