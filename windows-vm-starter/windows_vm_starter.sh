@@ -14,8 +14,6 @@ script_name="windows_vm_starter.sh"
 icon_name="windows10.png"
 shortcut_name="Windows.desktop"
 
-script_check_file=$script_name.check
-
 # Logging
 log () {
     printf ":: $1\n"
