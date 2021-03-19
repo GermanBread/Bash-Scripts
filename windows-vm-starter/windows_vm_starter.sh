@@ -139,9 +139,9 @@ if [[ $? < $startresult ]]; then
     startresult=$?
 fi
 if [[ $startresult == "0" ]]; then
-    logandnotif "Replaced older instance" -a "Windows VM Starter"
+    logandnotif "Replaced older instance"
 else
-    logandnotif "Starting VM" -a "Windows VM Starter"
+    logandnotif "Starting VM"
 fi
 echo $pass | sudo -S virsh start win10
 if [[ $? == "0" ]]; then
@@ -181,4 +181,4 @@ if [[ $? == "0" ]]; then
 else
     log "VM is not running\n"
 fi
-logandnotif "Script exit" -a "Windows VM Starter"
+logandnotif "Script exit"
