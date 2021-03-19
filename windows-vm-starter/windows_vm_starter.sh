@@ -9,7 +9,6 @@ mkdir -p $shortcut_path
 mkdir -p $icon_path
 
 base_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/windows-vm-starter"
-
 script_name="windows_vm_starter.sh"
 icon_name="windows10.png"
 shortcut_name="Windows.desktop"
@@ -124,6 +123,11 @@ if [ ! -e /tmp/vminitpassword ]; then
 	chmod 600 /tmp/vminitpassword
 	# Write the password to the file
 	echo $pass > /tmp/vminitpassword
+fi
+
+# Update checking
+if [[ "$(cat $0)" != "$(curl $base_dl/$script_name)" ]]; then
+    logandnotif "Update available! Use the context menu to update"
 fi
 
 # Code
