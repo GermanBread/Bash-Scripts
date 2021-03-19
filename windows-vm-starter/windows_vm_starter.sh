@@ -153,7 +153,7 @@ if [[ $? == "0" ]]; then
     log "Started Windows 10 VM\n"
 else
     log "VM is already running.\n"
-    sleep 1 # Add artificial delay to prevent the restart detection from failing
+    sleep 2 # Add artificial delay to prevent the restart detection from failing
 fi
 
 log "Starting scream\n"
@@ -169,7 +169,7 @@ else
 	looking-glass-client
 fi
 
-sleep .1 # Add artificial delay to prevent the restart detection from failing
+sleep 1 # Prevent race-condition
 
 log "Killing scream\n"
 pkill scream
