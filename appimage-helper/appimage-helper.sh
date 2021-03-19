@@ -47,7 +47,14 @@ if [[ "$0" == "sh" ]]; then
 fi
 
 # Script updating
-if [[ "$script_cache" != "$script_response" ]]; then
+check_for_update () {
+    if [ "$(curl -s "$template_base_dl/$script_name")" != "$(cat "$script_cache")" ]; then
+        curl -s "$template_base_dl/$script_name" > "$script_cache"
+        return 1
+    fi
+}
+check_for_update
+if [[ $? -ne 0 ]]; then
     log "Updating script"
     wget -Nq  "$template_base_dl/$script_name"
     chmod +x $script_name
