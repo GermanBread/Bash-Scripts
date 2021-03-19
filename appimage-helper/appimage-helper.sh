@@ -29,29 +29,29 @@ tool_name="appimagetool-x86_64.AppImage"
 appkit_response="$(curl -ss "$base_dl/$tool_name")"
 script_response="$(curl -ss "$template_base_dl/$script_name")"
 
-if [ -e "$script_check" ]; then
+if [ -e $script_check ]; then
     script_cache="$(cat $script_check)"
 fi
-if [ -e "$appkit_check" ]; then
+if [ -e $appkit_check ]; then
     appkit_cache="$(cat $appkit_check)"
 fi
 
 # Script installation, I'd prefer users to use sh
-if [ $0 == "sh" ] || [ $0 == "bash" ]; then
+if [[ "$0" == "sh" ]]; then
     log "Installing script"
     wget -qN "$template_base_dl/$script_name"
     chmod +x $script_name
     echo $script_response > $script_check
-    sh $script_name
+    #sh $script_name
     exit 0
 fi
 
 # Script updating
-if [[ $script_cache != $script_response ]]; then
+if [[ "$script_cache" != "$script_response" ]]; then
     log "Updating script"
-    echo $script_response > $script_check
     wget -Nq  "$template_base_dl/$script_name"
     chmod +x $script_name
+    echo $script_response > $script_check
     sh $script_name
     exit 0
 fi
