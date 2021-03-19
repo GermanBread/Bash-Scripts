@@ -68,7 +68,7 @@ if [ -z $1 ]; then
     exit 1
 fi
 
-if [ ! -d $1 ]; then
+if [ ! -d $1 ] || [ -z "$(ls -A $1)" ]; then
     log "Creating new AppImage template for x86_64"
     # Directory tree
     mkdir -p $1
