@@ -116,6 +116,7 @@ if [[ $(echo $pass | sudo -Skp "Checking for root" whoami) != "root" ]]; then
     exit 1
 fi
 
+# We want to store the password somewhere; Reason is that noone wants to reenter their password (maybe create a config file that disables this behaviour?)
 if [ ! -e /tmp/vminitpassword ]; then
 	# Create a dummy file
 	touch /tmp/vminitpassword
