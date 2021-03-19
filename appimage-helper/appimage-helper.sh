@@ -17,7 +17,7 @@ error () {
 template_base_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/appimage-helper"
 template_desktop="template.desktop"
 template_icon="template.png"
-template_script="template.sh"
+template_script="templatescript"
 
 script_name="appimage-helper.sh"
 appkit_check="latest_appimage"
@@ -77,13 +77,13 @@ if [ ! -d $1 ]; then
     # Downloading
     wget -O "$1/AppRun" "$base_dl/AppRun-x86_64" &>> log
     wget -O "$1/$1.png" "$template_base_dl/$template_icon" &>> log
-    wget -O "$1/usr/bin/$1.sh" "$template_base_dl/$template_script" &>> log
+    wget -O "$1/usr/bin/$1" "$template_base_dl/$template_script" &>> log
     wget -O "$1/$1.desktop" "$template_base_dl/$template_desktop" &>> log
     
     # Marking files as executable
     chmod +x "$1/AppRun"
     chmod +x "$1/$1.desktop"
-    chmod +x "$1/usr/bin/$1.sh"
+    chmod +x "$1/usr/bin/$1"
     
     sed -i "s/template/$1/g" "$1/$1.desktop" &>> log
     log "Done, modify the files if needed"
