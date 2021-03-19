@@ -41,23 +41,17 @@ if [[ "$0" == "sh" ]]; then
     log "Installing script"
     wget -qN "$template_base_dl/$script_name"
     chmod +x $script_name
-    echo $script_response > $script_check
+    echo "$script_response" > "$script_check"
     sh $script_name
     exit 0
 fi
 
 # Script updating
-check_for_update () {
-    if [ "$(curl -ss "$template_base_dl/$script_name")" != "$(cat "$script_cache")" ]; then
-        curl -ss "$template_base_dl/$script_name" > "$script_cache"
-        return 1
-    fi
-}
-if [[ check_for_update -ne 0 ]]; then
+if [[ "$script_response" != "$script_cache" ]]; then
     log "Updating script"
     wget -Nq  "$template_base_dl/$script_name"
     chmod +x $script_name
-    echo $script_response > $script_check
+    echo "$script_response" > "$script_check"
     sh $script_name
     exit 0
 fi
@@ -86,7 +80,7 @@ fi
 
 if [[ $appkit_cache != $appkit_response ]] || [ ! -e $tool_name ]; then
     log "Downloading latest appimagekit"
-    echo $appkit_response > $appkit_check
+    echo "$appkit_response" > "$appkit_check"
     wget -Nq  "$base_dl/$tool_name"
     chmod +x $tool_name
 else
