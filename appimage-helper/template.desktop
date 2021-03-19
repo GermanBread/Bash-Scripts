@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=template
+Exec=template.sh
 Icon=template
 Name=template
 Type=Application
