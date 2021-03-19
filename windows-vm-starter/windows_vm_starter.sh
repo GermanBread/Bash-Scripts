@@ -126,7 +126,7 @@ if [ ! -e /tmp/vminitpassword ]; then
 fi
 
 # Update checking
-if [[ "$(cat $0)" != "$(curl $base_dl/$script_name)" ]]; then
+if [[ "$(cat $0)" != "$(curl "$base_dl/$script_name")" ]]; then
     logandnotif "Update available! Use the context menu to update"
 fi
 
