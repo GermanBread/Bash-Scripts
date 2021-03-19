@@ -1,2 +1,6 @@
 #!/bin/sh
 echo "Hello World!"
+echo "If you want to deploy your AppImage, keep these results below in mind"
+echo pwd: $(pwd)
+echo \$0: $0
+echo \$APPIMAGE: $APPIMAGE
