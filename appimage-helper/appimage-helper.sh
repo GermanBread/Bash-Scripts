@@ -70,13 +70,21 @@ fi
 
 if [ ! -d $1 ]; then
     log "Creating new AppImage template for x86_64"
+    # Directory tree
     mkdir -p $1
     mkdir -p $1/usr/bin
-    wget -O "$1/$1.png" "$template_base_dl/$template_icon" &>> log
-    wget -O "$1/$1.desktop" "$template_base_dl/$template_desktop" &>> log
-    wget -O "$1/usr/bin/$1.sh" "$template_base_dl/$template_script" &>> log
-    chmod +x "$1/usr/bin/$1.sh"
+    
+    # Downloading
     wget -O "$1/AppRun" "$base_dl/AppRun-x86_64" &>> log
+    wget -O "$1/$1.png" "$template_base_dl/$template_icon" &>> log
+    wget -O "$1/usr/bin/$1.sh" "$template_base_dl/$template_script" &>> log
+    wget -O "$1/$1.desktop" "$template_base_dl/$template_desktop" &>> log
+    
+    # Marking files as executable
+    chmod +x "$1/AppRun"
+    chmod +x "$1/$1.desktop"
+    chmod +x "$1/usr/bin/$1.sh"
+    
     sed -i "s/template/$1/g" "$1/$1.desktop" &>> log
     log "Done, modify the files if needed"
     exit 0
@@ -92,6 +100,7 @@ else
 fi
 
 log "Packaging"
+export ARCH="x86_64"
 ./$tool_name $1 &>> log
 if [[ $? != 0 ]]; then
     error "Error occured, check log for more info"
