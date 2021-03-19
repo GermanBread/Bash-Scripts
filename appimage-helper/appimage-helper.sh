@@ -42,19 +42,18 @@ if [[ "$0" == "sh" ]]; then
     wget -qN "$template_base_dl/$script_name"
     chmod +x $script_name
     echo $script_response > $script_check
-    #sh $script_name
+    sh $script_name
     exit 0
 fi
 
 # Script updating
 check_for_update () {
-    if [ "$(curl -s "$template_base_dl/$script_name")" != "$(cat "$script_cache")" ]; then
-        curl -s "$template_base_dl/$script_name" > "$script_cache"
+    if [ "$(curl -ss "$template_base_dl/$script_name")" != "$(cat "$script_cache")" ]; then
+        curl -ss "$template_base_dl/$script_name" > "$script_cache"
         return 1
     fi
 }
-check_for_update
-if [[ $? -ne 0 ]]; then
+if [[ check_for_update -ne 0 ]]; then
     log "Updating script"
     wget -Nq  "$template_base_dl/$script_name"
     chmod +x $script_name
