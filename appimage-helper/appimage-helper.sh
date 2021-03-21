@@ -1,15 +1,26 @@
 #!/bin/sh
 log () {
-    printf ":: $1\n"
+    tput bold
+    tput setaf 4
+    printf "[ INFO ]"
+    tput sgr0
+    printf " $1\n"
+    tput sgr0
 }
 warning () {
+    tput bold
     tput setaf 3
-    printf ":: $1\n"
+    printf "[ WARN ]"
+    tput sgr0
+    printf " $1\n"
     tput sgr0
 }
 error () {
+    tput bold
     tput setaf 1
-    printf ":: $1\n"
+    printf "[ ERRO ]"
+    tput sgr0
+    printf " $1\n"
     tput sgr0
 }
 
@@ -21,7 +32,6 @@ template_script="templatescript"
 
 script_name="appimage-helper.sh"
 appkit_check="latest_appimage"
-script_check="latest_script"
 
 # AppImageKit repository
 base_dl="https://github.com/AppImage/AppImageKit/releases/latest/download"
@@ -29,9 +39,6 @@ tool_name="appimagetool-x86_64.AppImage"
 appkit_response="$(curl -ss "$base_dl/$tool_name")"
 script_response="$(curl -ss "$template_base_dl/$script_name")"
 
-if [ -e $script_check ]; then
-    script_cache="$(cat $script_check)"
-fi
 if [ -e $appkit_check ]; then
     appkit_cache="$(cat $appkit_check)"
 fi
@@ -44,23 +51,23 @@ if [[ "$0" == "sh" ]]; then
     log "Installing script"
     wget -N "$template_base_dl/$script_name" &>> log
     chmod +x $script_name
-    echo "$script_response" > "$script_check"
     log "Install done"
     #sh $script_name
     exit 0
 fi
 
 # Script updating
-if [[ "$script_response" != "$script_cache" ]]; then
+if [[ "appimage-helper" != "$(basename $(pwd))" ]] && [[ "$script_response" != "$(cat $0)" ]]; then
     log "Updating script"
     wget -N  "$template_base_dl/$script_name" &>> log
     chmod +x $script_name
-    echo "$script_response" > "$script_check"
     sh "$script_name" "$1" # Pass parameters
     exit 0
+else
+    if [[ "appimage-helper" == "$(basename $(pwd))" ]]; then
+        log "Running inside debug enviroment, skipping update"
+    fi
 fi
-
-warning "This script assumes that you have some basic knowledge about AppImages and how they work"
 
 # AppImage packaging part
 if [ -z $1 ]; then
