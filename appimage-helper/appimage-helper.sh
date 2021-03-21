@@ -4,7 +4,7 @@ log () {
     tput setaf 4
     printf "[ INFO ]"
     tput sgr0
-    printf " $1\n"
+    printf " $*\n"
     tput sgr0
 }
 warning () {
@@ -12,7 +12,7 @@ warning () {
     tput setaf 3
     printf "[ WARN ]"
     tput sgr0
-    printf " $1\n"
+    printf " $*\n"
     tput sgr0
 }
 error () {
@@ -20,7 +20,7 @@ error () {
     tput setaf 1
     printf "[ ERRO ]"
     tput sgr0
-    printf " $1\n"
+    printf " $*\n"
     tput sgr0
 }
 
@@ -61,7 +61,7 @@ if [[ "appimage-helper" != "$(basename $(pwd))" ]] && [[ "$script_response" != "
     log "Updating script"
     wget -N  "$template_base_dl/$script_name" &>> log
     chmod +x $script_name
-    sh "$script_name" "$1" # Pass parameters
+    sh "$script_name" "$*" # Pass parameters
     exit 0
 else
     if [[ "appimage-helper" == "$(basename $(pwd))" ]]; then
@@ -70,29 +70,29 @@ else
 fi
 
 # AppImage packaging part
-if [ -z $1 ]; then
+if [ -z "$*" ]; then
     error "No appdir provided, refusing to continue"
     exit 1
 fi
 
-if [ ! -d $1 ] || [ -z "$(ls -A $1)" ]; then
+if [ ! -d "$*" ] || [ -z "$(ls -A "$*")" ]; then
     log "Creating new AppImage template for x86_64"
     # Directory tree
-    mkdir -p $1
-    mkdir -p $1/usr/bin
+    mkdir -p "$*"
+    mkdir -p "$*/usr/bin"
     
     # Downloading
-    wget -O "$1/AppRun" "$base_dl/AppRun-x86_64" &>> log
-    wget -O "$1/$1.png" "$template_base_dl/$template_icon" &>> log
-    wget -O "$1/usr/bin/$1" "$template_base_dl/$template_script" &>> log
-    wget -O "$1/$1.desktop" "$template_base_dl/$template_desktop" &>> log
+    wget -O "$*/AppRun" "$base_dl/AppRun-x86_64" &>> log
+    wget -O "$*/$*.png" "$template_base_dl/$template_icon" &>> log
+    wget -O "$*/usr/bin/$*" "$template_base_dl/$template_script" &>> log
+    wget -O "$*/$*.desktop" "$template_base_dl/$template_desktop" &>> log
     
     # Marking files as executable
-    chmod +x "$1/AppRun"
-    chmod +x "$1/$1.desktop"
-    chmod +x "$1/usr/bin/$1"
+    chmod +x "$*/AppRun"
+    chmod +x "$*/$*.desktop"
+    chmod +x "$*/usr/bin/$*"
     
-    sed -i "s/template/$1/g" "$1/$1.desktop" &>> log
+    sed -i "s/template/$*/g" "$*/$*.desktop" &>> log
     log "Done, modify the files if needed"
     exit 0
 fi
@@ -108,7 +108,7 @@ fi
 
 log "Packaging"
 export ARCH="x86_64"
-./$tool_name $1 &>> log
+./$tool_name "$*" &>> log
 if [[ $? != 0 ]]; then
     error "Error occured, check log for more info"
     exit 1
