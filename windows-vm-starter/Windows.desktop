@@ -4,10 +4,10 @@ Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh
 GenericName=Starts your Windows 10 Virtual Machine
 Icon=windows10.png
 Name=Windows 10 VM
-StartupNotify=false
+StartupNotify=true
 Terminal=false
 Type=Application
-Version=1
+Version=1.1
 Actions=fullscreen;update;uninstall;
 
 [Desktop Action fullscreen]

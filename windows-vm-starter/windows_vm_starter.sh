@@ -15,11 +15,16 @@ shortcut_name="Windows.desktop"
 
 # Logging
 log () {
-    printf ":: $1\n"
+    tput setaf 4
+    tput bold
+    printf "[ INFO ] "
+    tput sgr0
+    printf "$1\n";
 }
 error () {
     tput setaf 9
-    printf "E:: "
+    tput bold
+    printf "[ ERROR] "
     tput sgr0
     printf "$1\n"
 }
@@ -32,53 +37,57 @@ logandnotif () {
 }
 errorandnotif () {
     error "$1"
-    notif "$1"
+    notif "Error: $1"
+}
+helptext() {
+    printf " -fs\tto capture input on start and for looking-glass to start in fs\n"
+    printf " -up\tto update this script\n"
+    printf " -un\tto uninstall this script\n"
 }
 
 # Check for Curl
 if [ $0 == bash ]; then
     # Install
     logandnotif "Installing"
+    
     log "Installing script to $config_path"
-    wget -qO $config_path/$script_name $base_dl/$script_name
-    chmod +x $config_path/$script_name
+    wget -qO "$config_path/$script_name" "$base_dl/$script_name"
+    chmod +x "$config_path/$script_name"
+    
     log "Installing icon to $icon_path"
-    wget -qO $icon_path/$icon_name $base_dl/$icon_name
+    wget -qO "$icon_path/$icon_name" "$base_dl/$icon_name"
+    
     log "Installing .desktop to $shortcut_path"
-    wget -qO $shortcut_path/$shortcut_name $base_dl/$shortcut_name
+    wget -qO "$shortcut_path/$shortcut_name" "$base_dl/$shortcut_name"
 
-    logandnotif "Installation done. A .desktop file has been added"
+    logandnotif "Installation done. A .desktop file has been created. You can start it via your app launcher"
 
     exit 0
 fi
 
-if [ $1 == "-h" ]; then
-    printf " -fs\tto capture input on start and for looking-glass to start in fs\n"
-    exit
-fi
-if [ $1 == "--help" ]; then
-    printf " -fs\tto capture input on start and for looking-glass to start in fs\n"
-    exit
+if [ $1 == "-h" ] || [ $1 == "--help" ]; then
+    helptext
+    exit 0
 fi
 
 # Check if the script runs as root
 if [ $(whoami) == root ]; then
-    error "Do not run as root\n"
+    error "Do not run as root"
     exit 1
 fi
 
 # Update
 # Note: If the script or the .desktop file gets updated seperately, stuff might break
 if [ $1 == "-up" ]; then
-    logandnotif "Updating script"
+    log "Updating script"
     wget -qO $config_path/$script_name $base_dl/$script_name
 
-    logandnotif "Updating desktop file"
+    log "Updating desktop file"
     # Assume that the .desktop changed too
     wget -qO $shortcut_path/$shortcut_name $base_dl/$shortcut_name
     
     # Assume that the icon changed too
-    logandnotif "Updating icon"
+    log "Updating icon"
     wget -qO $icon_path/$icon_name $base_dl/$icon_name
 
     logandnotif "Update done"
@@ -87,16 +96,16 @@ fi
 
 # Uninstall
 if [ $1 == "-un" ]; then
-    logandnotif "Deleting $config_path"
-    rm -r $config_path
+    log "Deleting $config_path"
+    rm -r "$config_path"
 
-    logandnotif "Deleting desktop file"
-    rm $shortcut_path/$shortcut_name
+    log "Deleting desktop file"
+    rm "$shortcut_path/$shortcut_name"
     
-    logandnotif "Deleting icon"
-    rm $icon_path/$icon_name
+    log "Deleting icon"
+    rm "$icon_path/$icon_name"
 
-    logandnotif "Uninstall done"
+    log "Uninstall done"
     exit 0
 fi
 
@@ -108,7 +117,7 @@ else
 fi
     
 # Check if the password is valid
-log "Checking password\n"
+log "Checking password"
 if [[ $(echo $pass | sudo -Skp "Checking for root" whoami) != "root" ]]; then
     errorandnotif "Failed to check password!"
 	# Delete the password file, it might be faulty
@@ -131,9 +140,9 @@ if [[ "$(cat $0)" != "$(curl "$base_dl/$script_name")" ]]; then
     logandnotif "Update available! Use the context menu to update"
 fi
 
-# Code
-log "Looking for a script instance to replace\n"
-log "Killing any leftover processes\n"
+# Important code starts here
+log "Looking for a script instance to replace"
+log "Killing any leftover processes"
 startresult=1 # Assign a generic value above 0
 pkill scream
 if [[ $? < $startresult ]]; then
@@ -150,19 +159,19 @@ else
 fi
 echo $pass | sudo -S virsh start win10
 if [[ $? == "0" ]]; then
-    log "Started Windows 10 VM\n"
+    log "Started Windows 10 VM"
 else
-    log "VM is already running.\n"
+    log "VM is already running."
     sleep 2 # Add artificial delay to prevent the restart detection from failing
 fi
 
-log "Starting scream\n"
+log "Starting scream"
 scream -i virbr0 -p 4010 -o pulse -v & disown
 
 # Make the shm file world-readable
-echo $pass | sudo chmod 771 /dev/shm/looking-glass
+echo $pass | sudo -S chmod 771 /dev/shm/looking-glass
 
-log "Starting looking-glass\n"
+log "Starting looking-glass"
 if [ $1 == "-fs" ]; then
 	looking-glass-client -F opengl:vsync yes spice:captureOnStart yes
 else
@@ -171,19 +180,19 @@ fi
 
 sleep 1 # Prevent race-condition
 
-log "Killing scream\n"
+log "Killing scream"
 pkill scream
 # If scream is already dead, this indicates that the script has been restarted
 if [[ $? == "1" ]]; then
-    log "This script has been replaced by another instance\n"
+    log "This script has been replaced by another instance"
     exit
 fi
 
-log "Stopping VM\n"
-echo $pass | sudo virsh shutdown win10
+log "Stopping VM"
+echo $pass | sudo -S virsh shutdown win10
 if [[ $? == "0" ]]; then
-    log "Stopped Windows 10 VM\n"
+    log "Stopped Windows 10 VM"
 else
-    log "VM is not running\n"
+    log "VM is not running"
 fi
 logandnotif "Script exit"
