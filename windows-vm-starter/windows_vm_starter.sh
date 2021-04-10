@@ -4,6 +4,7 @@
 config_path=~/.GermanBread/vm-starter
 shortcut_path=~/.local/share/applications
 icon_path=~/.local/share/icons/hicolor/512x512/apps
+password_path=/tmp/.$USER.vminitpassword
 mkdir -p $config_path
 mkdir -p $shortcut_path
 mkdir -p $icon_path
@@ -110,8 +111,8 @@ if [ $1 == "-un" ]; then
 fi
 
 # Get the password
-if [ -e /tmp/vminitpassword ]; then
-    pass=$(cat /tmp/vminitpassword);
+if [ -e $password_path ]; then
+    pass=$(cat $password_path);
 else
     pass=$(zenity --password --name "Windows 10 VM starter");
 fi
@@ -121,18 +122,18 @@ log "Checking password"
 if [[ $(echo $pass | sudo -Skp "Checking for root" whoami) != "root" ]]; then
     errorandnotif "Failed to check password!"
 	# Delete the password file, it might be faulty
-	rm /tmp/vminitpassword
+	rm $password_path
     exit 1
 fi
 
 # We want to store the password somewhere; Reason is that noone wants to reenter their password (maybe create a config file that disables this behaviour?)
-if [ ! -e /tmp/vminitpassword ]; then
+if [ ! -e $password_path ]; then
 	# Create a dummy file
-	touch /tmp/vminitpassword
+	touch $password_path
 	# Then immediately chmod it to 600
-	chmod 600 /tmp/vminitpassword
+	chmod 600 $password_path
 	# Write the password to the file
-	echo $pass > /tmp/vminitpassword
+	echo $pass > $password_path
 fi
 
 # Update checking
