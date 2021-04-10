@@ -44,6 +44,7 @@ helptext() {
     printf " -fs\tto capture input on start and for looking-glass to start in fs\n"
     printf " -up\tto update this script\n"
     printf " -un\tto uninstall this script\n"
+    printf " -k\tto kill all running instances\n"
 }
 
 # Check for Curl
@@ -106,7 +107,28 @@ if [ $1 == "-un" ]; then
     log "Deleting icon"
     rm "$icon_path/$icon_name"
 
-    log "Uninstall done"
+    logandnotif "Uninstall done"
+    exit 0
+fi
+
+# Kill all instances
+if [ $1 == "-k" ]; then
+    log "Stopping looking glass"
+    killall looking-glass-c &
+    
+    log "Stopping scream"
+    killall scream &
+
+    sleep .1
+    log "$(tput bold)==> Killing pass"
+    log "Killing looking glass"
+    killall -9 looking-glass-c
+    
+    log "Killing scream"
+    killall -9 scream
+
+    logandnotif "All instances killed"
+    killall -9 windows_vm_star
     exit 0
 fi
 

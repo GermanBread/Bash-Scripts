@@ -7,8 +7,8 @@ Name=Windows 10 VM
 StartupNotify=true
 Terminal=false
 Type=Application
-Version=1.1
-Actions=fullscreen;update;uninstall;
+Version=1.2
+Actions=fullscreen;update;uninstall;kill;
 
 [Desktop Action fullscreen]
 Name=Full-screen
@@ -21,3 +21,7 @@ Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -up
 [Desktop Action uninstall]
 Name=Uninstall
 Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -un
+
+[Desktop Action kill]
+Name=Kill all running instances
+Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -k
