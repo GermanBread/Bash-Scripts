@@ -1,6 +1,6 @@
 [Desktop Entry]
 Categories=Gaming;
-Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh
+Exec=~/.GermanBread/windows-reboot/windows_reboot.sh
 GenericName=Reboot into Windows
 Icon=windows10_reboot.png
 Name=Reboot to Windows
@@ -12,12 +12,12 @@ Actions=update;uninstall;reboot
 
 [Desktop Action update]
 Name=Update
-Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -up
+Exec=~/.GermanBread/windows-reboot/windows_reboot.sh -up
 
 [Desktop Action uninstall]
 Name=Uninstall
-Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -un
+Exec=~/.GermanBread/windows-reboot/windows_reboot.sh -un
 
 [Desktop Action reboot]
 Name=Reboot
-Exec=~/.GermanBread/vm-starter/windows_vm_starter.sh -r
+Exec=~/.GermanBread/windows-reboot/windows_reboot.sh -r

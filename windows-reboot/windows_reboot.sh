@@ -40,10 +40,9 @@ errorandnotif () {
     notif "Error: $1"
 }
 helptext() {
-    printf " -fs\tto capture input on start and for looking-glass to start in fs\n"
     printf " -up\tto update this script\n"
     printf " -un\tto uninstall this script\n"
-    printf " -k\tto kill all running instances\n"
+    printf " -r\tto immediately reboot after setting the next boot variable\n"
 }
 
 # Check for Curl
