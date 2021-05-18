@@ -29,7 +29,7 @@ error () {
     printf "$1\n"
 }
 notif () {
-    notify-send "$1" -a "Windows VM starter"
+    notify-send "$1" -a "Windows reboot"
 }
 logandnotif () {
     log "$1"
@@ -109,18 +109,23 @@ if [ $1 == "-un" ]; then
     exit 0
 fi
 
-pass=$(zenity --password --name "Windows reboot script")
-    
-# Check if the password is valid
-log "Checking password"
-if [[ $(echo $pass | sudo -Skp "Checking for root" id -u) -ne 0 ]]; then
-    errorandnotif "Failed to check password!"
-    exit 1
-fi
-
 # Update checking
 if [[ "$(cat $0)" != "$(curl "$base_dl/$script_name")" ]]; then
     logandnotif "Update available! Use the context menu to update"
+fi
+
+pass=$(zenity --password --name "Windows reboot script")
+if [ $? -ne 0 ] || [ -z $pass ]; then
+    logandnotif "Cancelled"
+    exit 0
+fi
+
+# Check if the password is valid
+log "Checking password"
+echo $pass | sudo -Sk id -u
+if [ $? -ne 0 ]; then
+    errorandnotif "Failed to check password!"
+    exit 1
 fi
 
 # Important code starts here
