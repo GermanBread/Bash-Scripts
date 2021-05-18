@@ -126,8 +126,8 @@ fi
 # Important code starts here
 echo $pass | sudo -S efibootmgr -n 0000
 if [ $1 = "-r" ]; then
-    log "Config set. Rebooting..."
+    logandnotif "Config set. Rebooting..."
     systemctl reboot
 else
-    log "Config set. Next reboot will launch you into Windows"
+    logandnotif "Config set. Next reboot will launch you into Windows"
 fi
