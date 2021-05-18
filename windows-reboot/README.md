@@ -7,7 +7,7 @@
 
 ## Warning
 
-* This script assumes that Windows's bootloader has the bootnum 0x0000
+* This script assumes that Windows's bootloader has the bootnum 0x0000 (check with efibootmgr)
 
 ## Okay, I read the warning, how do I use this?
 

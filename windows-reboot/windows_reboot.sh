@@ -45,6 +45,12 @@ helptext() {
     printf " -r\tto immediately reboot after setting the next boot variable\n"
 }
 
+# Check if the script runs as root
+if [ $(id -u) -eq 0 ]; then
+    error "Do not run as root"
+    exit 1
+fi
+
 # Check for Curl
 if [ $0 == bash ]; then
     # Install
@@ -68,12 +74,6 @@ fi
 if [ $1 == "-h" ] || [ $1 == "--help" ]; then
     helptext
     exit 0
-fi
-
-# Check if the script runs as root
-if [ $(whoami) == root ]; then
-    error "Do not run as root"
-    exit 1
 fi
 
 # Update
