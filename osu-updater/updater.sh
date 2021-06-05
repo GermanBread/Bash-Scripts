@@ -35,33 +35,21 @@ error () {
     tput sgr0
     printf "$1\n"
 }
-notif () {
-    notify-send "$1" -a "Osu update script"
-}
-logandnotif () {
-    log "$1"
-    notif "$1"
-}
-errorandnotif () {
-    error "$1"
-    notif "$1"
-}
 
 # Responsible for starting Osu!
 launch_osu () {
     # Check if the script is allowed to start Osu!
     if [ $param_1 != "nostart" ]; then
-        logandnotif "Starting Osu!"
+        log "Starting Osu!"
         ./osu.AppImage
         if [ $? -ne 0 ]; then
-            
             rm $osu_check_file
             if [ $param_1 != "norestart" ]; then
-                errorandnotif "Something went wrong. Attempting to fix issue by reinstalling Osu!"
+                error "Something went wrong. Attempting to fix issue by reinstalling"
                 bash $0 "norestart"
                 exit
             else
-                errorandnotif "Reinstall failed. Download the newest script here: https://github.com/GermanBread/Bash-Scripts"
+                error "Reinstall failed. Download the newest script here: https://github.com/GermanBread/Bash-Scripts"
             fi
         fi
         exit
@@ -84,19 +72,19 @@ check_for_osu_update () {
 
 # Updating
 update_script () {
-    logandnotif "Updating Script"
+    log "Updating Script"
     wget -qO $0 $script_dl
     if [ $? -ne 0 ]; then
-        errorandnotif "Script update failed"
+        error "Script update failed"
     else
         chmod +x $0
     fi
 }
 update_osu () {
-    logandnotif "Updating Osu!"
+    log "Updating Osu!"
     wget -qO $osu_fn $osu_dl
     if [ $? -ne 0 ]; then
-        errorandnotif "Osu! update failed"
+        error "Osu! update failed"
     else
         chmod +x $osu_fn
     fi
