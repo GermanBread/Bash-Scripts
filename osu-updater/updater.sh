@@ -106,12 +106,20 @@ fi
 touch $osu_check_file
 touch $script_check_file
 
-check_for_script_update
-if [ $? -ne 0 ]; then
-    update_script
-fi
-check_for_osu_update
-if [ $? -ne 0 ]; then
-    update_osu
+log "Checking internet"
+ping -c 1 1.1.1.1 -W 1 >/dev/null
+if [ $? ]; then
+    log "Checking for script update..."
+    check_for_script_update
+    if [ $? ]; then
+        update_script
+    fi
+    log "Checking for osu! update..."
+    check_for_osu_update
+    if [ $? ]; then
+        update_osu
+    fi
+else
+    error "No internet connectivity!"
 fi
 launch_osu
