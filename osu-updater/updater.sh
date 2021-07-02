@@ -108,15 +108,15 @@ touch $script_check_file
 
 log "Checking internet"
 ping -c 1 1.1.1.1 -W 1 >/dev/null
-if [ $? ]; then
+if [ $? -eq 0 ]; then
     log "Checking for script update..."
     check_for_script_update
-    if [ $? ]; then
+    if [ $? -ne 0 ]; then
         update_script
     fi
     log "Checking for osu! update..."
     check_for_osu_update
-    if [ $? ]; then
+    if [ $? -ne 0 ]; then
         update_osu
     fi
 else
