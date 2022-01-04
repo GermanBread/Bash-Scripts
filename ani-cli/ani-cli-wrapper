@@ -1,0 +1,44 @@
+#!/bin/sh
+
+_root=~/.GermanBread/ani-cli-wrapper
+script_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/ani-cli/ani-cli-wrapper"
+
+self_update() {
+    curl ${script_dl} > /tmp/.ani-cli.update
+    if [ "$(<$0)" != "$(/tmp/.ani-cli.update)" ]; then
+        chmod +x /tmp/.ani-cli.update
+        mv /tmp/.ani-cli.update $0
+    fi
+    exec $0 $*
+}
+
+update_git() {
+    cd ${_root}/git
+    git fetch               &>/dev/null
+    git reset --hard master &>/dev/null
+    git pull                &>/dev/null
+}
+
+patch_script() {
+    sed -i "s,player_fn=\"mpv\",# See ${_root}/anirc,gm" ani-cli
+}
+
+get_options() {
+    source ${_root}/anirc
+    export player_fn
+}
+
+uninstall() {
+    rm -f ~/.local/bin/ani-cli
+    rm -rf ${_root}
+    echo "Uninstalled"
+    exit 0
+}
+
+[ $1 == "--uninstall" ] && uninstall
+
+self_update
+update_git
+patch_script
+get_options
+exec ./ani-cli $*
