@@ -4,12 +4,12 @@ _root=~/.GermanBread/ani-cli-wrapper
 script_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/ani-cli/ani-cli-wrapper"
 
 self_update() {
-    curl ${script_dl} > /tmp/.ani-cli.update
-    if [ "$(<$0)" != "$(/tmp/.ani-cli.update)" ]; then
-        chmod +x /tmp/.ani-cli.update
-        mv /tmp/.ani-cli.update $0
+    curl -s ${script_dl} > /tmp/.ani-cli.update
+    if ! cmp -s /tmp/.ani-cli.update ${_root}/exec; then
+        mv /tmp/.ani-cli.update ${_root}/exec
+        chmod +x ${_root}/exec
+        exec $0 $*
     fi
-    exec $0 $*
 }
 
 update_git() {
@@ -35,7 +35,7 @@ uninstall() {
     exit 0
 }
 
-[ $1 == "--uninstall" ] && uninstall
+[ "$1" == "--uninstall" ] && uninstall
 
 self_update
 update_git
