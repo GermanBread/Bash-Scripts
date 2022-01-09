@@ -3,6 +3,13 @@
 _root=~/.GermanBread/ani-cli-wrapper
 script_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/ani-cli/ani-cli-wrapper"
 
+uninstall() {
+    rm -f ~/.local/bin/ani-cli ~/.cache/ani-hsts
+    rm -rf ${_root}
+    echo "Uninstalled sucessfully"
+    exit 0
+}
+
 self_update() {
     curl -s ${script_dl} > /tmp/.ani-cli.update
     if ! cmp -s /tmp/.ani-cli.update ${_root}/exec; then
@@ -23,22 +30,27 @@ patch_script() {
     sed -i "s,player_fn=\"mpv\",# See ${_root}/anirc,gm" ani-cli
 }
 
+restore_history() {
+    [ -e ${_root}/ani-hsts ] && \
+        cp ${_root}/ani-hsts ~/.cache/ani-hsts 2>/dev/null
+}
+
 get_options() {
     source ${_root}/anirc
     export player_fn
 }
 
-uninstall() {
-    rm -f ~/.local/bin/ani-cli
-    rm -rf ${_root}
-    echo "Uninstalled"
-    exit 0
+save_history() {
+    cp ~/.cache/ani-hsts ${_root}/ani-hsts 2>/dev/null
 }
 
-[ "$1" == "--uninstall" ] && uninstall
+[ "$1" == "--uninstall" ] && \
+    uninstall
 
-self_update
+self_update $* # Pass script args to function
 update_git
 patch_script
 get_options
-exec ./ani-cli $*
+restore_history
+./ani-cli $*
+save_history
