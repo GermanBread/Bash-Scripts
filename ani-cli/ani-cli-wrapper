@@ -26,9 +26,10 @@ update_git() {
     git pull                &>/dev/null
 }
 
-patch_script() {
-    sed -i "s,player_fn=\"mpv\",# See ${_root}/anirc,gm" ani-cli
-}
+# ani-cli has commandline switches now
+#patch_script() {
+#    sed -i "s,player_fn=\"mpv\",# See ${_root}/anirc,gm" ani-cli
+#}
 
 restore_history() {
     [ -e ${_root}/ani-hsts ] && \
@@ -47,10 +48,11 @@ save_history() {
 [ "$1" == "--uninstall" ] && \
     uninstall
 
-self_update $* # Pass script args to function
+_oldpwd=$(pwd)
+#self_update $* # Pass script args to function
 update_git
-patch_script
 get_options
 restore_history
-./ani-cli $*
+cd ${_oldpwd}
+${_root}/git/ani-cli $*
 save_history
