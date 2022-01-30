@@ -10,6 +10,6 @@ ln -sf ${_root}/exec ~/.local/bin/ani-cli
 
 git clone https://github.com/pystardust/ani-cli.git ${_root}/git &>/dev/null
 
-echo -n "Default config at ${_root}/anirc : "
-echo 'player_fn="mpv"' | tee ${_root}/anirc
+echo "Default config at ${_root}/anirc : "
+echo 'mirror="https://gogoanime.wiki"' | tee ${_root}/anirc
 echo "Uninstall: ani-cli --uninstall"

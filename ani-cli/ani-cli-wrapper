@@ -26,10 +26,10 @@ update_git() {
     git pull                &>/dev/null
 }
 
-# ani-cli has commandline switches now
-#patch_script() {
-#    sed -i "s,player_fn=\"mpv\",# See ${_root}/anirc,gm" ani-cli
-#}
+
+patch_script() {
+    sed -E -i 's,https://gogoanime\.\w+,${mirror},gm' ${_root}/git/ani-cli
+}
 
 restore_history() {
     [ -e ${_root}/ani-hsts ] && \
@@ -38,7 +38,12 @@ restore_history() {
 
 get_options() {
     source ${_root}/anirc
-    export player_fn
+    export mirror
+
+    if [ -z "${mirror}" ]; then
+        echo "mirror=https://gogoanime.wiki" >>${_root}/anirc
+        export mirror=https://gogoanime.wiki
+    fi
 }
 
 save_history() {
@@ -52,6 +57,7 @@ _oldpwd=$(pwd)
 self_update $* # Pass script args to function
 update_git
 get_options
+patch_script
 restore_history
 cd ${_oldpwd}
 ${_root}/git/ani-cli $*
