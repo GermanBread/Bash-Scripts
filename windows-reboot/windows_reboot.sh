@@ -7,11 +7,13 @@ icon_path=~/.local/share/icons/hicolor/512x512/apps
 mkdir -p $config_path
 mkdir -p $shortcut_path
 mkdir -p $icon_path
+[ ! -e ${config_path}/bootnum ] && echo 0000 >${config_path}/bootnum
 
 base_dl="https://raw.githubusercontent.com/GermanBread/Bash-Scripts/master/windows-reboot"
 script_name="windows_reboot.sh"
 icon_name="windows10_reboot.png"
 shortcut_name="Windows_reboot.desktop"
+bootnum=$(cat ${config_path}/bootnum)
 
 # Logging
 log () {
@@ -55,6 +57,14 @@ fi
 if [ $0 == bash ]; then
     # Install
     logandnotif "Installing"
+    
+    log "Checking requirements"
+    if ! command -v notify-send; then
+        error "notify-send needs to be installed"
+    fi
+    if ! command -v zenity; then
+        error "zenity needs to be installed"
+    fi
     
     log "Installing script to $config_path"
     wget -qO "$config_path/$script_name" "$base_dl/$script_name"
@@ -110,12 +120,13 @@ if [ $1 == "-un" ]; then
 fi
 
 # Update checking
-if [[ "$(cat $0)" != "$(curl "$base_dl/$script_name")" ]]; then
-    logandnotif "Update available! Use the context menu to update"
+if [[ "$(cat $0)" != "$(curl "${base_dl}/${script_name}")" ]]; then
+    notif "Update available! Use the context menu to update"
+    log "Update available! Run this script with the '-up' flag"
 fi
 
 pass=$(zenity --password --name "Windows reboot script")
-if [ $? -ne 0 ] || [ -z $pass ]; then
+if [ $? -ne 0 ] || [ -z ${pass} ]; then
     logandnotif "Cancelled"
     exit 0
 fi
@@ -129,8 +140,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # Important code starts here
-echo $pass | sudo -S efibootmgr -n 0000
-if [ $1 = "-r" ]; then
+echo $pass | sudo -S efibootmgr -n ${bootnum}
+if [ "$1" = "-r" ]; then
     logandnotif "Config set. Rebooting..."
     systemctl reboot
 else

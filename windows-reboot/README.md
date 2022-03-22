@@ -4,10 +4,8 @@
 
 * Files get installed to ~/.GermanBread/windows-reboot
 * The shortcut has a submenu (accessed by right-clicking it)
-
-## Warning
-
-* This script assumes that Windows's bootloader has the bootnum 0x0000 (check with efibootmgr)
+* This script depends on notify-send and zenity
+* You need to adjust the bootnum saved in ~/.GermanBread/windows-reboot/bootnum to the actual bootnum of the Windows bootloader (acquire with `efibootmgr`). Default is 0000
 
 ## Okay, I read the warning, how do I use this?
 
