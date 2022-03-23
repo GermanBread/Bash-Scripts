@@ -53,12 +53,12 @@ save_history() {
 [ "$1" == "--uninstall" ] && \
     uninstall
 
-_oldpwd=$(pwd)
+_oldpwd="$(pwd)"
 self_update $* # Pass script args to function
 update_git
 get_options
 patch_script
 restore_history
-cd ${_oldpwd}
+cd "${_oldpwd}"
 ${_root}/git/ani-cli $*
 save_history
