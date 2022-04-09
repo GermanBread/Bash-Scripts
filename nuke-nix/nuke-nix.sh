@@ -7,7 +7,8 @@ fi
 
 echo 'stopping nix-daemon'
 systemctl disable --now nix-daemon
-rm /etc/systemd/system/nix-daemon.service
+rm /etc/systemd/system/nix-daemon.{service,socket}
+rm /etc/systemd/system/sockets.target.wants/nix-daemon.socket
 echo 'removing Nix'
 rm -rf /nix
 rm /etc/profile.d/nix{,-daemon}.sh
@@ -21,3 +22,4 @@ for i in $(getent passwd | grep -Eo 'nixbld[0-9]+'); do
 done
 echo 'most Nix stuff is removed now'
 echo 'however, you need to manually remove Nix code from /etc/zshrc /etc/bashrc and /etc/bash.bashrc'
+echo "Nix's bashrc backup file should also be taken care of (/etc/bash.bashrc.backup-before-nix)"
