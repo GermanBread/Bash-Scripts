@@ -30,7 +30,7 @@ tmpdir=$(mktemp -d)
 
 # Logging
 log () {
-    printf ":: $1\n"
+    printf "N:: $1\n"
 }
 error () {
     tput setaf 9
@@ -40,22 +40,22 @@ error () {
 }
 
 # Update checking
-check_for_script_update () {
+check_for_script_update() {
     curl -sL $script_dl >$tmpdir/script
     cmp -s $0 $tmpdir/script
     return $?
 }
-check_for_osu_update () {
+check_for_osu_update() {
     curl -sL $osu_check_dl >$tmpdir/check
     if ! cmp -s $tmpdir/check $osu_check_file; then
-        mv $tmpdir/check $osu_check_file
+        mv -f $tmpdir/check $osu_check_file
         return 1
     fi
     return 0
 }
 
 # Updating
-update_script () {
+update_script() {
     log "Updating Script"
     wget -qO $0 $script_dl
     if [ $? -ne 0 ]; then
@@ -63,10 +63,13 @@ update_script () {
     else
         chmod +x $0
     fi
-    log "Restarting script" $param_1
-    exec $0
+    rm -rf $tmpdir
+    log "Restarting script"
+    exec $0 $param_1
+    log "The script should never get here – and yet, it got here..."
+    exit 1
 }
-update_osu () {
+update_osu() {
     log "Updating Osu!"
     wget -qO $osu_fn $osu_base_dl/$osu_fn
     if [ $? -ne 0 ]; then
