@@ -81,8 +81,7 @@ perform_checks() {
         log "Checking for script update..."
         check_for_script_update
         if [ $? -ne 0 ]; then
-            #update_script
-            echo a
+            update_script
         fi
         log "Checking for osu! update..."
         check_for_osu_update
