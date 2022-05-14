@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Made by GermanBread#9077
-# You can use this script inside Lutris
+# You can use this script inside Lutris, just add "nostart" to the script's args
 
 ## Variables
 
@@ -38,17 +38,23 @@ error() {
 
 # Update checking
 check_for_script_update() {
-    curl -sL $script_dl >$tmpdir/script
-    cmp -s $0 $tmpdir/script
-    return $?
+    log "Checking for script update..."
+    wget -qO $tmpdir/script $script_dl
+    if ! cmp -s $0 $tmpdir/script; then
+        return 0
+    fi
+    log "Already up-to-date"
+    return 1
 }
 check_for_osu_update() {
-    curl -sL $osu_check_dl >$tmpdir/check
+    log "Checking for osu! update..."
+    curl -sL $osu_check_dl | grep $osu_fn >$tmpdir/check
     if ! cmp -s $tmpdir/check $osu_check_file; then
         mv -f $tmpdir/check $osu_check_file
-        return 1
+        return 0
     fi
-    return 0
+    log "Already up-to-date"
+    return 1
 }
 
 # Updating
@@ -80,14 +86,12 @@ perform_checks() {
     log "Checking internet"
     ping -c 1 1.1.1.1 -W 1 >/dev/null
     if [ $? -eq 0 ]; then
-        log "Checking for script update..."
         check_for_script_update
-        if [ $? -ne 0 ]; then
+        if [ $? -eq 0 ]; then
             update_script
         fi
-        log "Checking for osu! update..."
         check_for_osu_update
-        if [ $? -ne 0 ]; then
+        if [ $? -eq 0 ]; then
             update_osu
         fi
     else
@@ -105,6 +109,7 @@ launch_osu () {
             rm -f $osu_check_file
             if [ "$1" != "norestart" ]; then
                 error "Attempting to fix issue by reinstalling"
+                check_for_osu_update
                 update_osu
                 launch_osu "norestart"
                 exit
@@ -135,7 +140,7 @@ rm -f $script_check_file
 
 perform_checks
 
+launch_osu
+
 # Clean up
 rm -rf $tmpdir
-
-launch_osu
