@@ -29,14 +29,11 @@ tmpdir=$(mktemp -d)
 ## Functions are defined here
 
 # Logging
-log () {
-    printf "N:: $1\n"
+log() {
+    echo -e "\033[36mI:\033[0m  $*"
 }
-error () {
-    tput setaf 9
-    printf "E:: "
-    tput sgr0
-    printf "$1\n"
+error() {
+    echo -e "\033[1;4;31mE::\033[0m $*"
 }
 
 # Update checking
@@ -56,10 +53,10 @@ check_for_osu_update() {
 
 # Updating
 update_script() {
-    log "Updating Script"
+    log "Performing automatic self-update"
     wget -qO $0 $script_dl
     if [ $? -ne 0 ]; then
-        error "Script update failed"
+        error "Automatic update failed"
     else
         chmod +x $0
     fi
