@@ -63,6 +63,8 @@ update_script () {
     else
         chmod +x $0
     fi
+    log "Restarting script" $param_1
+    exec $0
 }
 update_osu () {
     log "Updating Osu!"
