@@ -47,7 +47,7 @@ check_for_script_update () {
 }
 check_for_osu_update () {
     curl -sL $osu_check_dl >$tmpdir/check
-    if cmp -s $tmpdir/check $osu_check_file; then
+    if ! cmp -s $tmpdir/check $osu_check_file; then
         mv $tmpdir/check $osu_check_file
         return 1
     fi
