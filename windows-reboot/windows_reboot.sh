@@ -54,7 +54,7 @@ if [ $(id -u) -eq 0 ]; then
 fi
 
 # Check for Curl
-if [ $0 == bash ]; then
+if [ "$0" == bash ]; then
     # Install
     logandnotif "Installing"
     
@@ -81,14 +81,14 @@ if [ $0 == bash ]; then
     exit 0
 fi
 
-if [ $1 == "-h" ] || [ $1 == "--help" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     helptext
     exit 0
 fi
 
 # Update
 # Note: If the script or the .desktop file gets updated seperately, stuff might break
-if [ $1 == "-up" ]; then
+if [ "$1" == "-up" ]; then
     log "Updating script"
     wget -qO $config_path/$script_name $base_dl/$script_name
 
@@ -105,7 +105,7 @@ if [ $1 == "-up" ]; then
 fi
 
 # Uninstall
-if [ $1 == "-un" ]; then
+if [ "$1" == "-un" ]; then
     log "Deleting $config_path"
     rm -r "$config_path"
 
@@ -120,27 +120,12 @@ if [ $1 == "-un" ]; then
 fi
 
 # Update checking
-if [[ "$(cat $0)" != "$(curl "${base_dl}/${script_name}")" ]]; then
+if [[ "$(cat "$0")" != "$(curl "${base_dl}/${script_name}")" ]]; then
     notif "Update available! Use the context menu to update"
     log "Update available! Run this script with the '-up' flag"
 fi
 
-pass=$(zenity --password --name "Windows reboot script")
-if [ $? -ne 0 ] || [ -z ${pass} ]; then
-    logandnotif "Cancelled"
-    exit 0
-fi
-
-# Check if the password is valid
-log "Checking password"
-echo $pass | sudo -Sk id -u
-if [ $? -ne 0 ]; then
-    errorandnotif "Failed to check password!"
-    exit 1
-fi
-
-# Important code starts here
-echo $pass | sudo -S efibootmgr -n ${bootnum}
+pkexec efibootmgr -n ${bootnum}
 if [ "$1" = "-r" ]; then
     logandnotif "Config set. Rebooting..."
     systemctl reboot
