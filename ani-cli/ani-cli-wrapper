@@ -60,5 +60,5 @@ get_options
 patch_script
 restore_history
 cd "${_oldpwd}"
-${_root}/git/ani-cli $*
+${_root}/git/bin/ani-cli $*
 save_history
