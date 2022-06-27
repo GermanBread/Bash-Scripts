@@ -28,7 +28,7 @@ update_git() {
 
 
 patch_script() {
-    sed -E -i 's,https://gogoanime\.\w+,${mirror},gm' ${_root}/git/ani-cli
+    sed -E -i 's,https://gogoanime\.\w+,${mirror},gm' ${_root}/git/bin/ani-cli
 }
 
 restore_history() {
