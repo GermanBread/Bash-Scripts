@@ -126,10 +126,11 @@ if [[ "$(cat "$0")" != "$(curl "${base_dl}/${script_name}")" ]]; then
 fi
 
 pkexec efibootmgr -n ${bootnum}
-if [ "$?" -eq 127 ]; then
+_status=$?
+if [ "${_status}" -eq 127 ]; then
     errorandnotif "Authorization error"
     exit 1
-elif [ $? -gt 0 ]; then
+elif [ "${_status}" -gt 0 ]; then
     errorandnotif "Unknown error"
     exit 1
 fi
