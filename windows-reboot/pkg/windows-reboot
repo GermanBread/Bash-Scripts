@@ -41,7 +41,6 @@ if [ $(id -u) -eq 0 ]; then
     exit 1
 fi
 
-command -v efibootmgr
 pkexec efibootmgr -n ${bootnum}
 _status=$?
 if [ "${_status}" -eq 127 ]; then
