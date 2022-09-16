@@ -12,6 +12,8 @@ stdenv.mkDerivation {
     efibootmgr
     # cmd: id
     coreutils
+    # cmd: notify-send
+    libnotify
   ];
   installPhase = ''
     mkdir -p $out/bin $out/share/{icons,applications}
