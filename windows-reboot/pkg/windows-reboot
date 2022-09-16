@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cfg=${XDG_CONFIG_HOME:-~/.config}/GermanBread/windows-reboot
+mkdir -p $cfg
 if [ ! -e $cfg/bootnum ]; then
     echo 0000 >$cfg/bootnum
     # Windows's bootloader is usually at bootnum 0x0000
@@ -9,12 +10,22 @@ else
     bootnum=$(cat ${cfg}/bootnum)
 fi
 
+log () {
+    tput setaf 4
+    tput bold
+    printf "[ INFO ] "
+    tput sgr0
+    printf "$1\n";
+}
 error () {
     tput setaf 9
     tput bold
     printf "[ ERROR] "
     tput sgr0
     printf "$1\n"
+}
+notif () {
+    notify-send "$1" -a "Windows reboot"
 }
 logandnotif () {
     log "$1"
