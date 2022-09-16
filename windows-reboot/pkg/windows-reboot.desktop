@@ -1,0 +1,15 @@
+[Desktop Entry]
+Categories=Gaming;
+Exec=windows-reboot
+GenericName=Reboot into Windows
+Icon=win10.png
+Name=Reboot to Windows
+StartupNotify=true
+Terminal=false
+Type=Application
+Version=1.0
+Actions=reboot
+
+[Desktop Action reboot]
+Name=Reboot
+Exec=windows-reboot -r

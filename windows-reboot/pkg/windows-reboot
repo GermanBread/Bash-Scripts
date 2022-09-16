@@ -1,0 +1,47 @@
+#!/bin/sh
+
+cfg=${XDG_CONFIG_HOME:-~/.config}/GermanBread/windows-reboot
+if [ ! -e $cfg/bootnum ]; then
+    echo 0000 >$cfg/bootnum
+    # Windows's bootloader is usually at bootnum 0x0000
+    bootnum=0000
+else
+    bootnum=$(cat ${cfg}/bootnum)
+fi
+
+error () {
+    tput setaf 9
+    tput bold
+    printf "[ ERROR] "
+    tput sgr0
+    printf "$1\n"
+}
+logandnotif () {
+    log "$1"
+    notif "$1"
+}
+errorandnotif () {
+    error "$1"
+    notif "Error: $1"
+}
+
+if [ $(id -u) -eq 0 ]; then
+    error "Do not run as root"
+    exit 1
+fi
+
+pkexec efibootmgr -n ${bootnum}
+_status=$?
+if [ "${_status}" -eq 127 ]; then
+    errorandnotif "Authorisation error"
+    exit 1
+elif [ "${_status}" -gt 0 ]; then
+    errorandnotif "Unknown error"
+    exit 1
+fi
+if [ "$1" = "-r" ]; then
+    logandnotif "Config set. Rebooting..."
+    systemctl reboot
+else
+    logandnotif "Config set. Next reboot will launch you into Windows"
+fi

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-# define out config path
+# define our config paths
 config_path=~/.GermanBread/windows-reboot
 shortcut_path=~/.local/share/applications
 icon_path=~/.local/share/icons/hicolor/512x512/apps
@@ -62,8 +62,8 @@ if [ "$0" == bash ]; then
     if ! command -v notify-send; then
         error "notify-send needs to be installed"
     fi
-    if ! command -v zenity; then
-        error "zenity needs to be installed"
+    if ! command -v pkexec; then
+        error "polkit needs to be installed"
     fi
     
     log "Installing script to $config_path"
